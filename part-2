@@ -1,0 +1,27 @@
+from fastapi import FastAPI,Path,Query #importing path and query in the program
+from pydantic import BaseModel
+from typing import Optional,List
+
+
+class User (BaseModel):
+    email:str
+    is_active:bool
+    bio:Optional[str]
+
+app=FastAPI()
+
+users=[]
+
+@app.get("/user",response_model=List[User])
+def list_users():
+    return users
+
+@app.post("/user")
+def add_user(user:User):
+    users.append(user)
+    return "Successfully Added to the list :)"
+
+#Example of path and query parameters.
+@app.get("/user/{id}")
+def give_by_id(id:int=Path(...,description="ID of the user you want to retrieve",gt=0),q:str=Query(None,max_length=5)):
+    return {"user":users[id],"Query":q}
