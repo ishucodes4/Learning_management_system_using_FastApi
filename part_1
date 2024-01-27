@@ -1,0 +1,22 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional,List
+
+
+class User (BaseModel):
+    email:str
+    is_active:bool
+    bio:Optional[str]
+
+app=FastAPI()
+
+users=[]
+
+@app.get("/user",response_model=List[User])
+def list_users():
+    return users
+
+@app.post("/user")
+def add_user(user:User):
+    users.append(user)
+    return "Successfully Added to the list :)"
